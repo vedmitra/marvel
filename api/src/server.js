@@ -30,7 +30,7 @@ const invoker = (req, res, path) => {
   const privateKey = process.env.PRIVATE_KEY;
   const hash = generateHash(ts, privateKey, publicKey);
   const offset = req?.request?.offset || 0;
-  const limit = req?.quesry?.limit || 20;
+  const limit = req?.query?.limit || 100;
   const apiUrl = `https://gateway.marvel.com/v1/public/${path}?ts=${ts}&apikey=${publicKey}&hash=${hash}&offset=${offset}&limit=${limit}`;
   console.log(res);
   console.log(`Request URL: ${apiUrl}`);
@@ -70,6 +70,15 @@ const invoker = (req, res, path) => {
 
 app.get("/api/series", (req, res) => {
   invoker(req, res, "series");
+});
+app.get("/api/characters/:id/comics", (req, res) => {
+  const id = req?.params?.id;
+  invoker(req, res, `characters/${id}/comics`);
+});
+
+app.get("/api/series/:id/characters", (req, res) => {
+  const id = req?.params?.id;
+  invoker(req, res, `series/${id}/characters`);
 });
 
 app.listen(port, () => {
