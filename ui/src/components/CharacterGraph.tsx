@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import ForceGraph2D from 'react-force-graph-2d';
+import React, { useEffect, useRef } from 'react';
 import { useCharacterGraph } from '../hooks/useCharacterGraph';
 
 const CharacterGraph: React.FC<{
@@ -6,18 +7,77 @@ const CharacterGraph: React.FC<{
 }> = ({ seriesId }) => {
   const { characters: characterGraph, fetchCharacterGraph } =
     useCharacterGraph();
-  console.log(characterGraph);
+  const isInitialRender = useRef(true);
   useEffect(() => {
-    console.log("ll");
-    // fetchCharacterGraph(seriesId);
-  }, []);
+    if (isInitialRender.current) {
+      fetchCharacterGraph();
+      isInitialRender.current = false;
+    }
+  }, [isInitialRender, fetchCharacterGraph]);
+  const graph = {
+    nodes: [
+      {
+        id: "id1",
+        val: 1,
+        img: () => {
+          const img = new Image();
+          img.src =
+            "http://i.annihil.us/u/prod/marvel/i/mg/4/b0/5d939e25a9787.jpg";
+          return img;
+        },
+      },
+      {
+        id: "id2",
+        img: () => {
+          const img = new Image();
+          img.src =
+            "http://i.annihil.us/u/prod/marvel/i/mg/4/b0/5d939e25a9787.jpg";
+          return img;
+        },
+        val: 10,
+      },
+      {
+        id: "id3",
+        img: () => {
+          const img = new Image();
+          img.src =
+            "http://i.annihil.us/u/prod/marvel/i/mg/4/b0/5d939e25a9787.jpg";
+          return img;
+        },
+        val: 5,
+      },
+      {
+        id: "id4",
+        img: () => {
+          const img = new Image();
+          img.src =
+            "http://i.annihil.us/u/prod/marvel/i/mg/4/b0/5d939e25a9787.jpg";
+          return img;
+        },
+        val: 10,
+      },
+    ],
+    links: [
+      {
+        source: "id1",
+        target: "id2",
+      },
+      {
+        source: "id2",
+        target: "id3",
+      },
+      {
+        source: "id4",
+        target: "id2",
+      },
+    ],
+  };
   return (
-    // <ForceGraph2D
-    //   graphData={graphData}
-    //   nodeAutoColorBy="group"
-    //   onNodeClick={(node: any) => onCharacterSelect(node)}
-    // />
-    <></>
+    <ForceGraph2D
+      graphData={graph}
+      nodeAutoColorBy="group"
+      //   onNodeClick={(node: any) => onCharacterSelect(node)}
+    />
   );
 };
 

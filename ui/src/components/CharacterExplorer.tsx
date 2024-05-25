@@ -1,3 +1,4 @@
+import CharacterGraph from './CharacterGraph';
 import React, {
   useCallback,
   useEffect,
@@ -16,14 +17,19 @@ import {
   CircularProgress,
   Container,
   Box,
-  Modal,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
 } from "@mui/material";
 
 export const CharacterExplorer: React.FC = () => {
-  const [isCharacterModalOpen, setIsOpenCharaterModal] = useState(false);
+  const [isCharacterModalOpen, setIsOpenCharacterModal] = useState(false);
+  const [selectedSeries, setSelectedSeries] = useState<SeriesItem | null>(null);
   const { fetchSeriesList, loading, seriesList, nextPage, prevPage, error } =
     useSeries();
   const isInitialRender = useRef(true);
+
   useEffect(() => {
     if (isInitialRender.current) {
       fetchSeriesList();
@@ -31,12 +37,16 @@ export const CharacterExplorer: React.FC = () => {
     }
   }, [isInitialRender, fetchSeriesList]);
 
-  const openCharacterModal = useCallback(() => {
-    setIsOpenCharaterModal(true);
+  const openCharacterModal = useCallback((series: SeriesItem) => {
+    setSelectedSeries(series);
+    setIsOpenCharacterModal(true);
   }, []);
+
   const closeCharacterModal = useCallback(() => {
-    setIsOpenCharaterModal(false);
+    setIsOpenCharacterModal(false);
+    setSelectedSeries(null);
   }, []);
+
   return (
     <div>
       <h1>Marvel Character Explorer</h1>
@@ -58,7 +68,7 @@ export const CharacterExplorer: React.FC = () => {
                         height: "100%",
                         cursor: "pointer",
                       }}
-                      onClick={openCharacterModal}
+                      onClick={() => openCharacterModal(series)}
                     >
                       <CardMedia
                         component="img"
@@ -69,6 +79,9 @@ export const CharacterExplorer: React.FC = () => {
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
                           {series.title}
+                        </Typography>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {`Total characters ${series.characters?.items.length}`}
                         </Typography>
                       </CardContent>
                     </Card>
@@ -99,15 +112,24 @@ export const CharacterExplorer: React.FC = () => {
           </>
         )}
       </Container>
-      {isCharacterModalOpen && (
-        <Modal
-          open={true}
+      {selectedSeries && (
+        <Dialog
+          open={isCharacterModalOpen}
           onClose={closeCharacterModal}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
+          fullScreen={true}
         >
-          <div>test</div>
-        </Modal>
+          <DialogTitle>{`${selectedSeries?.title} characters`} </DialogTitle>
+          <DialogContent>
+            <CharacterGraph seriesId={selectedSeries.id} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeCharacterModal} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       )}
     </div>
   );
