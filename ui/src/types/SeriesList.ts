@@ -8,11 +8,6 @@ type Thumbnail = {
   extension: string;
 };
 
-type ComicItem = {
-  resourceURI: string;
-  name: string;
-};
-
 type StoryItem = {
   resourceURI: string;
   name: string;
@@ -22,12 +17,6 @@ type StoryItem = {
 type EventItem = {
   resourceURI: string;
   name: string;
-};
-
-type CharacterItem = {
-  resourceURI: string;
-  name: string;
-  role: string;
 };
 
 type CreatorItem = {
@@ -48,6 +37,11 @@ type ResourceItem = {
   name: string;
 };
 
+type Image = {
+  path: string;
+  extension: string;
+};
+
 export type SeriesItem = {
   id: number;
   title: string;
@@ -66,4 +60,41 @@ export type SeriesItem = {
   creators: Collection<CreatorItem>;
   next: ResourceItem;
   previous: ResourceItem;
+};
+
+export type CharacterItem = {
+  id: number;
+  name: string;
+  description: string;
+  modified: Date;
+  resourceURI: string;
+  urls: Url[];
+  thumbnail: Thumbnail;
+  comics: ComicItem[];
+  stories: Collection<StoryItem>;
+  events: Collection<EventItem>;
+  series: Collection<SeriesItem>;
+};
+
+export type ComicItem = {
+  id: number;
+  digitalId: number;
+  title: string;
+  issueNumber: number;
+  variantDescription: string;
+  description: string;
+  modified: Date;
+  isbn: string;
+  upc: string;
+  diamondCode: string;
+  ean: string;
+  issn: string;
+  format: string;
+  pageCount: number;
+  resourceURI: string;
+  urls: Url[];
+  series: SeriesItem;
+  thumbnail: Thumbnail;
+  images: Image[];
+  characters: CharacterItem;
 };
