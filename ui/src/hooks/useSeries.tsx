@@ -19,10 +19,10 @@ type SeriesAPI = {
 
 export const useSeries = () => {
   const [seriesList, setSeriesList] = useState<SeriesItem[]>([]);
-  const [pageInfo, setPageInfo] = useState({ offset: 0, limit: 10, total: 0 });
+  const [pageInfo, setPageInfo] = useState({ offset: 0, limit: 20, total: 0 });
   const { request, loading, error } = useAPI<SeriesAPI>();
 
-  const fetchSeriesList = (offset: number = 0, limit: number = 100) => {
+  const fetchSeriesList = (offset: number = 0, limit: number = 20) => {
     request(`/api/series?offset=${offset}&limit=${limit}`).then((response) => {
       setSeriesList(response.data.results);
       setPageInfo({
@@ -32,8 +32,6 @@ export const useSeries = () => {
       });
     });
   };
-
-  const fetchSeriesItem;
 
   const nextPage = () => {
     const newOffset = pageInfo.offset + pageInfo.limit;
