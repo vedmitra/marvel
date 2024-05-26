@@ -5,7 +5,7 @@ import { useCharacterGraph } from '../hooks/useCharacterGraph';
 const CharacterGraph: React.FC<{
   seriesId: number;
 }> = ({ seriesId }) => {
-  const { characters: characterGraph, fetchCharacterGraph } =
+  const { characters, characterGraph, fetchCharacterGraph } =
     useCharacterGraph();
   const isInitialRender = useRef(true);
   useEffect(() => {
@@ -74,7 +74,7 @@ const CharacterGraph: React.FC<{
   };
   return (
     <ForceGraph2D
-      graphData={graph}
+      graphData={characterGraph}
       nodeAutoColorBy="group"
       //   onNodeClick={(node: any) => onCharacterSelect(node)}
     />
