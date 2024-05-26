@@ -11,7 +11,7 @@ type Thumbnail = {
 type StoryItem = {
   resourceURI: string;
   name: string;
-  type: string;
+  type?: string;
 };
 
 type EventItem = {
@@ -30,6 +30,8 @@ type Collection<T> = {
   returned: number;
   collectionURI: string;
   items: T[];
+  name?: string;
+  resourceURI?: string;
 };
 
 type ResourceItem = {
@@ -66,14 +68,23 @@ export type CharacterItem = {
   id: number;
   name: string;
   description: string;
-  modified: Date;
+  modified: string;
   resourceURI: string;
-  urls: Url[];
+  urls?: Url[];
   thumbnail: Thumbnail;
-  comics: ComicItem[];
-  stories: Collection<StoryItem>;
-  events: Collection<EventItem>;
-  series: Collection<SeriesItem>;
+  comics: {
+    available: number;
+    collectionURI: string;
+    returned: number;
+    items: {
+      resourceURI: string;
+      name: string;
+    }[];
+  };
+  img?: string;
+  stories?: Collection<StoryItem>;
+  events?: Collection<EventItem>;
+  series?: Collection<StoryItem>;
 };
 
 export type ComicItem = {
