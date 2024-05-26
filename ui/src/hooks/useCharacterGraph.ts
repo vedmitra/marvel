@@ -1,7 +1,7 @@
-import useApi from './useAPI';
-import { CharacterItem } from '../types/SeriesList';
-import { characters as mockCharacters } from './Characters';
-import { useCallback, useState } from 'react';
+import useApi from "./useAPI";
+import { CharacterItem } from "../types/SeriesList";
+import { characters as mockCharacters } from "./Characters";
+import { useCallback, useState } from "react";
 
 type CharacterAPI = {
   code: number;
@@ -20,6 +20,7 @@ type CharacterAPI = {
 type Node = {
   id: string;
   name: string;
+  img: string;
 };
 
 type Link = {
@@ -83,18 +84,25 @@ export const useCharacterGraph = () => {
     const charGraph = buildGraph(mockCharacters);
     setCharacterGraph(charGraph);
     console.log(charGraph);
-  }, [request]);
+  }, []);
 
   const buildGraph = (characters: CharacterItem[]): Result => {
     const nodes: Node[] = [];
     const links: Link[] = [];
     const comicToCharacters: { [comicURI: string]: Set<number> } = {};
-
+    const chars = characters.map((char) => {
+      delete char?.series;
+      delete char?.events;
+      delete char?.stories;
+      char.img = char?.thumbnail?.path;
+      return char;
+    });
     // Create nodes and build the comic-to-characters map
-    characters.forEach((character) => {
+    chars.forEach((character) => {
       nodes.push({
         id: character.id.toString(),
         name: character.name,
+        img: `${character.thumbnail.path}.${character.thumbnail.extension}`,
       });
       character.comics.items.forEach((comic) => {
         if (!comicToCharacters[comic.resourceURI]) {
