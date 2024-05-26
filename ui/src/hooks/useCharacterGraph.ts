@@ -43,47 +43,49 @@ export const useCharacterGraph = () => {
   }>();
 
   const fetchCharacterGraph = useCallback(async () => {
-    // const limit = 100;
-    // let allRecords: CharacterItem[] = [];
+    const limit = 100;
+    let allRecords: CharacterItem[] = [];
 
-    // setLoading(true);
+    setLoading(true);
 
-    // try {
-    //   // Fetch the first batch to get the total count
-    //   const initialResponse = await request(
-    //     `/api/characters?offset=0&limit=${limit}`
-    //   );
-    //   allRecords = initialResponse.data.results;
+    try {
+      // Fetch the first batch to get the total count
+      const initialResponse = await request(
+        `/api/characters?offset=0&limit=${limit}`
+      );
+      allRecords = initialResponse.data.results;
 
-    //   const total = initialResponse.data.total;
-    //   const totalRequests = Math.ceil(total / limit);
-    //   console.log(totalRequests);
+      const total = initialResponse.data.total;
+      const totalRequests = Math.ceil(total / limit);
 
-    //   // Fetch the remaining batches
-    //   const requests = [];
-    //   for (let i = 1; i < totalRequests; i++) {
-    //     const offset = i * limit;
-    //     requests.push(
-    //       request(`/api/characters?offset=${offset}&limit=${limit}`)
-    //     );
-    //   }
+      // Fetch the remaining batches
+      const requests = [];
+      for (let i = 1; i < totalRequests; i++) {
+        const offset = i * limit;
+        requests.push(
+          request(`/api/characters?offset=${offset}&limit=${limit}`)
+        );
+      }
 
-    //   const responses = await Promise.all(requests);
-    //   responses.forEach((response) => {
-    //     allRecords = allRecords.concat(response.data.results);
-    //   });
+      const responses = await Promise.all(requests);
+      responses.forEach((response) => {
+        allRecords = allRecords.concat(response.data.results);
+      });
 
-    //   setCharacters(allRecords);
-    //   console.log(allRecords);
-    // } catch (err) {
-    //   console.error("Error fetching characters:", err);
-    // } finally {
-    //   setLoading(false);
-    // }
-    setCharacters(mockCharacters);
-    const charGraph = buildGraph(mockCharacters);
-    setCharacterGraph(charGraph);
-    console.log(charGraph);
+      setCharacters(allRecords);
+      const charGraph = buildGraph(mockCharacters);
+      console.log(charGraph);
+      setCharacterGraph(charGraph);
+    } catch (err) {
+      console.error("Error fetching characters:", err);
+    } finally {
+      setLoading(false);
+    }
+
+    // setCharacters(mockCharacters);
+    // const charGraph = buildGraph(mockCharacters);
+    // setCharacterGraph(charGraph);
+    // console.log(charGraph);
   }, []);
 
   const buildGraph = (characters: CharacterItem[]): Result => {
@@ -111,7 +113,6 @@ export const useCharacterGraph = () => {
         comicToCharacters[comic.resourceURI].add(character.id);
       });
     });
-    console.log(comicToCharacters);
 
     // Create links based on common comic appearances
     const characterPairs = new Set<string>();
