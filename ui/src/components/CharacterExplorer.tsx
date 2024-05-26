@@ -1,12 +1,7 @@
-import CharacterGraph from './CharacterGraph';
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-  } from 'react';
-import { SeriesItem } from '../types/SeriesList';
-import { useSeries } from '../hooks/useSeries';
+import CharacterGraph from "./CharacterGraph";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { SeriesItem } from "../types/SeriesList";
+import { useSeries } from "../hooks/useSeries";
 import {
   Grid,
   Card,
@@ -122,7 +117,7 @@ export const CharacterExplorer: React.FC = () => {
         >
           <DialogTitle>{`${selectedSeries?.title} characters`} </DialogTitle>
           <DialogContent>
-            <CharacterGraph seriesId={selectedSeries.id} />
+            <CharacterGraph />
           </DialogContent>
           <DialogActions>
             <Button onClick={closeCharacterModal} color="primary">

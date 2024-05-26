@@ -1,11 +1,11 @@
-import React from 'react';
-import { CharacterExplorer } from './components/CharacterExplorer';
-import './App.css';
+import CharacterGraph from "./components/CharacterGraph";
+import React from "react";
+import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <CharacterExplorer />
+      <CharacterGraph />
     </div>
   );
 }
