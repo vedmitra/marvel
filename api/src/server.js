@@ -75,6 +75,9 @@ app.get("/api/characters/:id/comics", (req, res) => {
   const id = req?.params?.id;
   invoker(req, res, `characters/${id}/comics`);
 });
+app.get("/api/characters", (req, res) => {
+  invoker(req, res, `characters`);
+});
 
 app.get("/api/series/:id/characters", (req, res) => {
   const id = req?.params?.id;
