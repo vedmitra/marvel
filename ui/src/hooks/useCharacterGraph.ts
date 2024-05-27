@@ -1,7 +1,7 @@
-import useApi from './useAPI';
-import { CharacterItem } from '../types/SeriesList';
-import { characters as mockCharacters } from './Characters';
-import { useCallback, useState } from 'react';
+import useApi from "./useAPI";
+import { CharacterItem } from "../types/SeriesList";
+import { characters as mockCharacters } from "./Characters";
+import { useCallback, useState } from "react";
 
 type CharacterAPI = {
   code: number;
@@ -36,6 +36,7 @@ type Result = {
 export const useCharacterGraph = () => {
   const { request, error } = useApi<CharacterAPI>();
   const [loading, setLoading] = useState(false);
+  const [buildingGraph, setBuildingGraph] = useState(false);
   const [characters, setCharacters] = useState<CharacterItem[]>([]);
   const [characterGraph, setCharacterGraph] = useState<{
     nodes: Node[];
@@ -132,6 +133,7 @@ export const useCharacterGraph = () => {
   };
 
   const buildGraph = (characters: CharacterItem[]): Result => {
+    setBuildingGraph(true);
     const nodes: Node[] = [];
     const links: Link[] = [];
     const comicToCharacters: { [comicURI: string]: Set<number> } = {};
@@ -173,6 +175,7 @@ export const useCharacterGraph = () => {
         }
       }
     });
+    setBuildingGraph(false);
 
     return { nodes, links };
   };
@@ -186,6 +189,7 @@ export const useCharacterGraph = () => {
     filterBySeries,
     getSeriesList,
     loading,
+    buildingGraph,
     error,
   };
 };
