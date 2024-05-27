@@ -1,7 +1,7 @@
-import useApi from "./useAPI";
-import { CharacterItem } from "../types/SeriesList";
-import { characters as mockCharacters } from "./Characters";
-import { useCallback, useState } from "react";
+import useApi from './useAPI';
+import { CharacterItem } from '../types/SeriesList';
+import { characters as mockCharacters } from './Characters';
+import { useCallback, useState } from 'react';
 
 type CharacterAPI = {
   code: number;
@@ -41,6 +41,16 @@ export const useCharacterGraph = () => {
     nodes: Node[];
     links: Link[];
   }>();
+  const [filteredCharacterGraph, setFilteredCharacterGraph] = useState<{
+    nodes: Node[];
+    links: Link[];
+  }>();
+  const [filteredSeriesList, setFilteredSeriesList] = useState<
+    {
+      value: string;
+      label: string;
+    }[]
+  >([]);
 
   const fetchCharacterGraph = useCallback(async () => {
     const limit = 100;
@@ -74,8 +84,8 @@ export const useCharacterGraph = () => {
 
       setCharacters(allRecords);
       const charGraph = buildGraph(mockCharacters);
-      console.log(charGraph);
       setCharacterGraph(charGraph);
+      getSeriesList("");
     } catch (err) {
       console.error("Error fetching characters:", err);
     } finally {
@@ -88,12 +98,44 @@ export const useCharacterGraph = () => {
     // console.log(charGraph);
   }, []);
 
+  const getSeriesList = (partialSeriesName: string) => {
+    const seriesMap: Map<string, string> = new Map();
+
+    characters.forEach((character) => {
+      character.series &&
+        character.series.items.forEach((series) => {
+          if (
+            series.name.toLowerCase().includes(partialSeriesName.toLowerCase())
+          ) {
+            seriesMap.set(series?.resourceURI, series.name);
+          }
+        });
+    });
+
+    setFilteredSeriesList(
+      Array.from(seriesMap.entries()).map(([value, label]) => ({
+        value,
+        label,
+      }))
+    );
+  };
+
+  const filterBySeries = (seriesName: string) => {
+    const filteredList = characters.filter(
+      (character) =>
+        character?.series &&
+        character?.series.items.some((series) =>
+          series.name.toLowerCase().includes(seriesName.toLowerCase())
+        )
+    );
+    setFilteredCharacterGraph(buildGraph(filteredList));
+  };
+
   const buildGraph = (characters: CharacterItem[]): Result => {
     const nodes: Node[] = [];
     const links: Link[] = [];
     const comicToCharacters: { [comicURI: string]: Set<number> } = {};
     const chars = characters.map((char) => {
-      delete char?.series;
       delete char?.events;
       delete char?.stories;
       char.img = char?.thumbnail?.path;
@@ -135,5 +177,15 @@ export const useCharacterGraph = () => {
     return { nodes, links };
   };
 
-  return { fetchCharacterGraph, characters, characterGraph, loading, error };
+  return {
+    fetchCharacterGraph,
+    characters,
+    characterGraph,
+    filteredCharacterGraph,
+    filteredSeriesList,
+    filterBySeries,
+    getSeriesList,
+    loading,
+    error,
+  };
 };
