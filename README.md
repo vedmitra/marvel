@@ -79,6 +79,8 @@ npm run start
 
 5. **Testing:**
    - While basic functionality is in place, there are several edge cases that need to be handled. The main focus was on building a solid foundation, setting up the component structure, passing data, and managing state. Internals can be improved.
+   - Responsive testing.
+  
 
 ## Future Enhancements
 
